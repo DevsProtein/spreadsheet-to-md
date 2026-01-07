@@ -50,5 +50,13 @@
   "successNoHeaderCopy": {
     "message": "ヘッダーなし形式でクリップボードにコピーしました。",
     "description": "ヘッダーなしコピー成功時のメッセージ"
+  },
+  "includeSheetName": {
+    "message": "シート名を含める",
+    "description": "シート名を含めるオプションのラベル"
+  },
+  "sheetNameNotFound": {
+    "message": "シート名を取得できませんでした",
+    "description": "シート名が取得できない時のエラーメッセージ"
   }
 }

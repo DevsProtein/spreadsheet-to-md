@@ -1,5 +1,6 @@
 // クリップボードのデータを保持する変数
 let originalClipboardText = '';
+let currentSheetName = '';
 
 // i18nテキストを適用する関数
 function applyI18n() {
@@ -7,12 +8,21 @@ function applyI18n() {
   document.getElementById('loading').textContent = chrome.i18n.getMessage('loading');
   document.getElementById('copyNoHeaderText').textContent = chrome.i18n.getMessage('copyNoHeaderSection');
   document.getElementById('copyNoHeaderBtn').textContent = chrome.i18n.getMessage('copyNoHeaderButton');
+  document.getElementById('includeSheetNameLabel').textContent = chrome.i18n.getMessage('includeSheetName');
 }
 
 // ポップアップが開かれた瞬間に自動実行
 document.addEventListener('DOMContentLoaded', async () => {
   // i18nテキストを適用
   applyI18n();
+
+  // シート名オプションの変更時に再変換
+  const includeSheetNameCheckbox = document.getElementById('includeSheetName');
+  includeSheetNameCheckbox.addEventListener('change', async () => {
+    if (originalClipboardText) {
+      await updateMarkdownOutput();
+    }
+  });
 
   await performConversion();
 
@@ -32,6 +42,12 @@ async function performConversion() {
   try {
     // ローディング表示
     loadingEl.style.display = 'block';
+
+    // シート名を取得
+    const sheetNameResponse = await chrome.runtime.sendMessage({ action: 'getSheetName' });
+    if (sheetNameResponse.success) {
+      currentSheetName = sheetNameResponse.sheetName;
+    }
 
     // background.jsにメッセージを送信して、現在のタブで選択範囲をコピー
     const response = await chrome.runtime.sendMessage({ action: 'convertSelection' });
@@ -54,7 +70,8 @@ async function performConversion() {
     originalClipboardText = clipboardText;
 
     // タブ区切りデータをMarkdownテーブルに変換
-    const markdown = convertToMarkdown(clipboardText);
+    const includeSheetName = document.getElementById('includeSheetName').checked;
+    const markdown = convertToMarkdown(clipboardText, includeSheetName ? currentSheetName : null);
 
     if (!markdown) {
       throw new Error(chrome.i18n.getMessage('errorNoTable'));
@@ -82,38 +99,141 @@ async function performConversion() {
   }
 }
 
-function convertToMarkdown(text) {
-  // 行に分割
-  const lines = text.trim().split('\n');
+// オプション変更時にMarkdown出力を更新
+async function updateMarkdownOutput() {
+  const statusEl = document.getElementById('status');
+  const previewEl = document.getElementById('preview');
 
-  if (lines.length === 0) {
+  try {
+    const includeSheetName = document.getElementById('includeSheetName').checked;
+    const markdown = convertToMarkdown(originalClipboardText, includeSheetName ? currentSheetName : null);
+
+    if (!markdown) {
+      throw new Error(chrome.i18n.getMessage('errorNoTable'));
+    }
+
+    // 変換結果をクリップボードに書き込む
+    await navigator.clipboard.writeText(markdown);
+
+    // プレビューを更新
+    previewEl.textContent = markdown;
+
+    // 成功メッセージを表示
+    statusEl.textContent = chrome.i18n.getMessage('successConverted');
+    statusEl.className = 'status success';
+
+  } catch (error) {
+    statusEl.textContent = chrome.i18n.getMessage('errorPrefix') + error.message;
+    statusEl.className = 'status error';
+  }
+}
+
+// TSV形式のテキストをパースする関数（セル内改行対応）
+function parseTSV(text) {
+  const rows = [];
+  let currentRow = [];
+  let currentCell = '';
+  let inQuotes = false;
+  let i = 0;
+
+  while (i < text.length) {
+    const char = text[i];
+    const nextChar = text[i + 1];
+
+    if (inQuotes) {
+      if (char === '"') {
+        if (nextChar === '"') {
+          // エスケープされた引用符
+          currentCell += '"';
+          i += 2;
+          continue;
+        } else {
+          // 引用符の終了
+          inQuotes = false;
+          i++;
+          continue;
+        }
+      } else {
+        // 引用符内の文字（改行含む）
+        currentCell += char;
+        i++;
+        continue;
+      }
+    } else {
+      if (char === '"') {
+        // 引用符の開始
+        inQuotes = true;
+        i++;
+        continue;
+      } else if (char === '\t') {
+        // タブ区切り
+        currentRow.push(currentCell);
+        currentCell = '';
+        i++;
+        continue;
+      } else if (char === '\r' && nextChar === '\n') {
+        // CRLF改行
+        currentRow.push(currentCell);
+        rows.push(currentRow);
+        currentRow = [];
+        currentCell = '';
+        i += 2;
+        continue;
+      } else if (char === '\n') {
+        // LF改行
+        currentRow.push(currentCell);
+        rows.push(currentRow);
+        currentRow = [];
+        currentCell = '';
+        i++;
+        continue;
+      } else {
+        currentCell += char;
+        i++;
+        continue;
+      }
+    }
+  }
+
+  // 最後のセルと行を追加
+  if (currentCell || currentRow.length > 0) {
+    currentRow.push(currentCell);
+    rows.push(currentRow);
+  }
+
+  return rows;
+}
+
+// セルを処理する関数
+function processCell(cell) {
+  let processed = cell.trim();
+  // Markdownテーブル内のパイプ文字をエスケープ
+  processed = processed.replace(/\|/g, '\\|');
+  // セル内改行を<br>に変換
+  processed = processed.replace(/\r?\n/g, '<br>');
+  return processed;
+}
+
+function convertToMarkdown(text, sheetName = null) {
+  // TSVをパース
+  const rows = parseTSV(text.trim());
+
+  if (rows.length === 0) {
     return null;
   }
 
-  // 各行をタブで分割してセルを取得
-  const rows = lines.map(line => {
-    // タブ区切りで分割
-    const cells = line.split('\t');
-    // 各セルをトリムして、パイプ文字をエスケープ
-    return cells.map(cell => {
-      let trimmed = cell.trim();
-      // Markdownテーブル内のパイプ文字をエスケープ
-      trimmed = trimmed.replace(/\|/g, '\\|');
-      // 改行を<br>に変換
-      trimmed = trimmed.replace(/\r?\n/g, '<br>');
-      return trimmed;
-    });
-  });
+  // 各セルを処理
+  const processedRows = rows.map(row => row.map(cell => processCell(cell)));
 
-  if (rows.length === 0 || rows[0].length === 0) {
+  if (processedRows.length === 0 || processedRows[0].length === 0) {
     return null;
   }
 
   // 最大列数を計算
-  const maxCols = Math.max(...rows.map(row => row.length));
+  const maxCols = Math.max(...processedRows.map(row => row.length));
 
   // 各行の列数を揃える
-  const normalizedRows = rows.map(row => {
+  const normalizedRows = processedRows.map(row => {
     while (row.length < maxCols) {
       row.push('');
     }
@@ -136,6 +256,12 @@ function convertToMarkdown(text) {
   // Markdownテーブルを構築
   const markdownLines = [];
 
+  // シート名を追加（オプション）
+  if (sheetName) {
+    markdownLines.push(`### ${sheetName}`);
+    markdownLines.push('');
+  }
+
   // ヘッダー行
   const headerCells = normalizedRows[0].map((cell, i) =>
     cell.padEnd(colWidths[i], ' ')
@@ -157,38 +283,26 @@ function convertToMarkdown(text) {
   return markdownLines.join('\n');
 }
 
-function convertToMarkdownNoHeader(text) {
-  // 行に分割
-  const lines = text.trim().split('\n');
+function convertToMarkdownNoHeader(text, sheetName = null) {
+  // TSVをパース
+  const rows = parseTSV(text.trim());
 
-  if (lines.length === 0) {
+  if (rows.length === 0) {
     return null;
   }
 
-  // 各行をタブで分割してセルを取得
-  const rows = lines.map(line => {
-    // タブ区切りで分割
-    const cells = line.split('\t');
-    // 各セルをトリムして、パイプ文字をエスケープ
-    return cells.map(cell => {
-      let trimmed = cell.trim();
-      // Markdownテーブル内のパイプ文字をエスケープ
-      trimmed = trimmed.replace(/\|/g, '\\|');
-      // 改行を<br>に変換
-      trimmed = trimmed.replace(/\r?\n/g, '<br>');
-      return trimmed;
-    });
-  });
+  // 各セルを処理
+  const processedRows = rows.map(row => row.map(cell => processCell(cell)));
 
-  if (rows.length === 0 || rows[0].length === 0) {
+  if (processedRows.length === 0 || processedRows[0].length === 0) {
     return null;
   }
 
   // 最大列数を計算
-  const maxCols = Math.max(...rows.map(row => row.length));
+  const maxCols = Math.max(...processedRows.map(row => row.length));
 
   // 各行の列数を揃える
-  const normalizedRows = rows.map(row => {
+  const normalizedRows = processedRows.map(row => {
     while (row.length < maxCols) {
       row.push('');
     }
@@ -211,6 +325,12 @@ function convertToMarkdownNoHeader(text) {
   // Markdownテーブルを構築（ヘッダーなし）
   const markdownLines = [];
 
+  // シート名を追加（オプション）
+  if (sheetName) {
+    markdownLines.push(`### ${sheetName}`);
+    markdownLines.push('');
+  }
+
   // 全ての行をデータ行として扱う
   for (let i = 0; i < normalizedRows.length; i++) {
     const dataCells = normalizedRows[i].map((cell, j) =>
@@ -224,6 +344,7 @@ function convertToMarkdownNoHeader(text) {
 
 async function copyWithoutHeader() {
   const statusEl = document.getElementById('status');
+  const previewEl = document.getElementById('preview');
 
   try {
     if (!originalClipboardText) {
@@ -231,7 +352,8 @@ async function copyWithoutHeader() {
     }
 
     // ヘッダーなし形式に変換
-    const markdownNoHeader = convertToMarkdownNoHeader(originalClipboardText);
+    const includeSheetName = document.getElementById('includeSheetName').checked;
+    const markdownNoHeader = convertToMarkdownNoHeader(originalClipboardText, includeSheetName ? currentSheetName : null);
 
     if (!markdownNoHeader) {
       throw new Error(chrome.i18n.getMessage('errorNoTable'));
@@ -239,6 +361,9 @@ async function copyWithoutHeader() {
 
     // クリップボードにコピー
     await navigator.clipboard.writeText(markdownNoHeader);
+
+    // プレビューを更新
+    previewEl.textContent = markdownNoHeader;
 
     // 成功メッセージを表示
     statusEl.textContent = chrome.i18n.getMessage('successNoHeaderCopy');

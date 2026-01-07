@@ -50,5 +50,13 @@
   "successNoHeaderCopy": {
     "message": "Copied to clipboard without header row.",
     "description": "Success message for no-header copy"
+  },
+  "includeSheetName": {
+    "message": "Include sheet name",
+    "description": "Label for include sheet name option"
+  },
+  "sheetNameNotFound": {
+    "message": "Could not get sheet name",
+    "description": "Error message when sheet name cannot be retrieved"
   }
 }
