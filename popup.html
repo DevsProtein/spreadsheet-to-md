@@ -121,8 +121,21 @@
     .copy-button:active {
       background-color: #0a6bc5;
     }
-    .copy-button + .copy-button {
-      margin-top: 8px;
+    .option-item {
+      display: flex;
+      align-items: center;
+      font-size: 12px;
+      color: #333;
+      margin-bottom: 10px;
+    }
+    .option-item input[type="checkbox"] {
+      margin-right: 8px;
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+    .option-item label {
+      cursor: pointer;
     }
   </style>
 </head>
@@ -130,11 +143,14 @@
   <h1>Spreadsheet to Markdown</h1>
   <p class="description" id="description"></p>
   <div id="loading" class="loading"></div>
-  <div id="status" class="status"></div>
+  <div class="option-item" id="sheetNameOption" style="display: none;">
+    <input type="checkbox" id="includeSheetName">
+    <label for="includeSheetName" id="includeSheetNameLabel"></label>
+  </div>
   <div id="preview" class="preview"></div>
+  <div id="status" class="status"></div>
   <div id="copySection" class="copy-section">
     <button id="copyNoHeaderBtn" class="copy-button"></button>
-    <button id="copyWithSheetNameBtn" class="copy-button"></button>
   </div>
   <script src="popup.js"></script>
 </body>
