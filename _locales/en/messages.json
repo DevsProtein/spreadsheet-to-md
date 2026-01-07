@@ -1,0 +1,54 @@
+{
+  "extName": {
+    "message": "Spreadsheet to Markdown",
+    "description": "Extension name"
+  },
+  "extDescription": {
+    "message": "Convert spreadsheet cells to Markdown table format",
+    "description": "Extension description"
+  },
+  "popupDescription": {
+    "message": "Automatically converts selected cells in your spreadsheet to Markdown format.",
+    "description": "Popup description text"
+  },
+  "loading": {
+    "message": "Converting",
+    "description": "Loading text during conversion"
+  },
+  "copyNoHeaderSection": {
+    "message": "Copy without header row",
+    "description": "Description for no-header copy section"
+  },
+  "copyNoHeaderButton": {
+    "message": "Copy without Header",
+    "description": "Button text for copying without header"
+  },
+  "errorCopyFailed": {
+    "message": "Failed to copy selection",
+    "description": "Error message when copy fails"
+  },
+  "errorNoClipboard": {
+    "message": "No data in clipboard. Please select cells in your spreadsheet.",
+    "description": "Error message when clipboard is empty"
+  },
+  "errorNoTable": {
+    "message": "No convertible table data found.",
+    "description": "Error message when no table data is found"
+  },
+  "successConverted": {
+    "message": "Converted to Markdown table! Copied to clipboard.",
+    "description": "Success message after conversion"
+  },
+  "errorPrefix": {
+    "message": "Error: ",
+    "description": "Error message prefix"
+  },
+  "errorNoOriginalData": {
+    "message": "No original data available.",
+    "description": "Error message when original data is missing"
+  },
+  "successNoHeaderCopy": {
+    "message": "Copied to clipboard without header row.",
+    "description": "Success message for no-header copy"
+  }
+}

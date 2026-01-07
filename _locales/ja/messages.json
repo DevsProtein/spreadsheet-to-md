@@ -1,0 +1,54 @@
+{
+  "extName": {
+    "message": "Spreadsheet to Markdown",
+    "description": "拡張機能の名前"
+  },
+  "extDescription": {
+    "message": "スプレッドシートのセルをMarkdownテーブル形式に変換します",
+    "description": "拡張機能の説明"
+  },
+  "popupDescription": {
+    "message": "スプレッドシートで選択中のセルを自動的にMarkdown形式に変換します。",
+    "description": "ポップアップの説明文"
+  },
+  "loading": {
+    "message": "変換中",
+    "description": "変換中のローディングテキスト"
+  },
+  "copyNoHeaderSection": {
+    "message": "ヘッダー無し形式のコピーはこちら",
+    "description": "ヘッダーなしコピーセクションの説明"
+  },
+  "copyNoHeaderButton": {
+    "message": "ヘッダーなしでコピー",
+    "description": "ヘッダーなしコピーボタンのテキスト"
+  },
+  "errorCopyFailed": {
+    "message": "選択範囲のコピーに失敗しました",
+    "description": "コピー失敗時のエラーメッセージ"
+  },
+  "errorNoClipboard": {
+    "message": "クリップボードにデータがありません。スプレッドシートでセルを選択してください。",
+    "description": "クリップボードが空の時のエラーメッセージ"
+  },
+  "errorNoTable": {
+    "message": "変換できるテーブルデータが見つかりません。",
+    "description": "テーブルデータが見つからない時のエラーメッセージ"
+  },
+  "successConverted": {
+    "message": "Markdownテーブルに変換完了！クリップボードにコピーしました。",
+    "description": "変換成功時のメッセージ"
+  },
+  "errorPrefix": {
+    "message": "エラー: ",
+    "description": "エラーメッセージのプレフィックス"
+  },
+  "errorNoOriginalData": {
+    "message": "元のデータがありません。",
+    "description": "元のデータがない時のエラーメッセージ"
+  },
+  "successNoHeaderCopy": {
+    "message": "ヘッダーなし形式でクリップボードにコピーしました。",
+    "description": "ヘッダーなしコピー成功時のメッセージ"
+  }
+}

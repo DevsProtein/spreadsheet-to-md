@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <!-- Background -->
+  <rect width="128" height="128" rx="16" fill="#4CAF50"/>
+
+  <!-- Table grid -->
+  <rect x="20" y="30" width="88" height="68" rx="4" fill="white" opacity="0.9"/>
+
+  <!-- Horizontal lines -->
+  <line x1="20" y1="48" x2="108" y2="48" stroke="#4CAF50" stroke-width="2"/>
+  <line x1="20" y1="64" x2="108" y2="64" stroke="#4CAF50" stroke-width="2"/>
+  <line x1="20" y1="80" x2="108" y2="80" stroke="#4CAF50" stroke-width="2"/>
+
+  <!-- Vertical lines -->
+  <line x1="50" y1="30" x2="50" y2="98" stroke="#4CAF50" stroke-width="2"/>
+  <line x1="78" y1="30" x2="78" y2="98" stroke="#4CAF50" stroke-width="2"/>
+
+  <!-- MD text -->
+  <text x="64" y="118" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="20" fill="white">MD</text>
+</svg>

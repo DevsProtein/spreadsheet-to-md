@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>アイコン生成</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    canvas { border: 1px solid #ccc; margin: 10px; }
+    .download-links { margin-top: 20px; }
+    a { display: block; margin: 10px 0; }
+  </style>
+</head>
+<body>
+  <h1>Chrome拡張機能アイコン生成</h1>
+  <p>下のリンクをクリックして各サイズのアイコンをダウンロードしてください。</p>
+
+  <div>
+    <h3>16x16</h3>
+    <canvas id="canvas16" width="16" height="16"></canvas>
+  </div>
+  <div>
+    <h3>48x48</h3>
+    <canvas id="canvas48" width="48" height="48"></canvas>
+  </div>
+  <div>
+    <h3>128x128</h3>
+    <canvas id="canvas128" width="128" height="128"></canvas>
+  </div>
+
+  <div class="download-links">
+    <a id="download16" download="icon16.png">Download icon16.png</a>
+    <a id="download48" download="icon48.png">Download icon48.png</a>
+    <a id="download128" download="icon128.png">Download icon128.png</a>
+  </div>
+
+  <script>
+    function drawIcon(ctx, size) {
+      const scale = size / 128;
+
+      // Background
+      ctx.fillStyle = '#4CAF50';
+      ctx.beginPath();
+      ctx.roundRect(0, 0, size, size, 16 * scale);
+      ctx.fill();
+
+      // Table background
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+      ctx.beginPath();
+      ctx.roundRect(20 * scale, 30 * scale, 88 * scale, 68 * scale, 4 * scale);
+      ctx.fill();
+
+      // Grid lines
+      ctx.strokeStyle = '#4CAF50';
+      ctx.lineWidth = 2 * scale;
+
+      // Horizontal lines
+      [48, 64, 80].forEach(y => {
+        ctx.beginPath();
+        ctx.moveTo(20 * scale, y * scale);
+        ctx.lineTo(108 * scale, y * scale);
+        ctx.stroke();
+      });
+
+      // Vertical lines
+      [50, 78].forEach(x => {
+        ctx.beginPath();
+        ctx.moveTo(x * scale, 30 * scale);
+        ctx.lineTo(x * scale, 98 * scale);
+        ctx.stroke();
+      });
+
+      // MD text
+      ctx.fillStyle = 'white';
+      ctx.font = `bold ${20 * scale}px Arial`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('MD', 64 * scale, 113 * scale);
+    }
+
+    // Generate icons
+    [16, 48, 128].forEach(size => {
+      const canvas = document.getElementById(`canvas${size}`);
+      const ctx = canvas.getContext('2d');
+      drawIcon(ctx, size);
+
+      const link = document.getElementById(`download${size}`);
+      link.href = canvas.toDataURL('image/png');
+    });
+  </script>
+</body>
+</html>
