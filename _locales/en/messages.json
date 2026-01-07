@@ -15,13 +15,13 @@
     "message": "Converting",
     "description": "Loading text during conversion"
   },
-  "copyNoHeaderSection": {
-    "message": "Copy without header row",
-    "description": "Description for no-header copy section"
-  },
   "copyNoHeaderButton": {
     "message": "Copy without Header",
     "description": "Button text for copying without header"
+  },
+  "copyWithSheetNameButton": {
+    "message": "Copy with Sheet Name",
+    "description": "Button text for copying with sheet name"
   },
   "errorCopyFailed": {
     "message": "Failed to copy selection",
@@ -51,9 +51,9 @@
     "message": "Copied to clipboard without header row.",
     "description": "Success message for no-header copy"
   },
-  "includeSheetName": {
-    "message": "Include sheet name",
-    "description": "Label for include sheet name option"
+  "successSheetNameCopy": {
+    "message": "Copied to clipboard with sheet name.",
+    "description": "Success message for sheet name copy"
   },
   "sheetNameNotFound": {
     "message": "Could not get sheet name",

@@ -15,13 +15,13 @@
     "message": "変換中",
     "description": "変換中のローディングテキスト"
   },
-  "copyNoHeaderSection": {
-    "message": "ヘッダー無し形式のコピーはこちら",
-    "description": "ヘッダーなしコピーセクションの説明"
-  },
   "copyNoHeaderButton": {
     "message": "ヘッダーなしでコピー",
     "description": "ヘッダーなしコピーボタンのテキスト"
+  },
+  "copyWithSheetNameButton": {
+    "message": "シート名付きでコピー",
+    "description": "シート名付きコピーボタンのテキスト"
   },
   "errorCopyFailed": {
     "message": "選択範囲のコピーに失敗しました",
@@ -51,9 +51,9 @@
     "message": "ヘッダーなし形式でクリップボードにコピーしました。",
     "description": "ヘッダーなしコピー成功時のメッセージ"
   },
-  "includeSheetName": {
-    "message": "シート名を含める",
-    "description": "シート名を含めるオプションのラベル"
+  "successSheetNameCopy": {
+    "message": "シート名付きでクリップボードにコピーしました。",
+    "description": "シート名付きコピー成功時のメッセージ"
   },
   "sheetNameNotFound": {
     "message": "シート名を取得できませんでした",
