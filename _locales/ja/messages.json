@@ -16,12 +16,20 @@
     "description": "変換中のローディングテキスト"
   },
   "copyNoHeaderButton": {
-    "message": "ヘッダーなしでコピー",
+    "message": "ヘッダー無しでコピー",
     "description": "ヘッダーなしコピーボタンのテキスト"
   },
-  "copyWithSheetNameButton": {
-    "message": "シート名付きでコピー",
-    "description": "シート名付きコピーボタンのテキスト"
+  "copyNoSheetNameButton": {
+    "message": "シート名無しでコピー",
+    "description": "シート名なしコピーボタンのテキスト"
+  },
+  "alwaysNoHeader": {
+    "message": "ヘッダーを常に含めない",
+    "description": "ヘッダーを常に含めないチェックボックスのラベル"
+  },
+  "alwaysNoSheetName": {
+    "message": "シート名を常に含めない",
+    "description": "シート名を常に含めないチェックボックスのラベル"
   },
   "errorCopyFailed": {
     "message": "選択範囲のコピーに失敗しました",
@@ -51,9 +59,9 @@
     "message": "ヘッダーなし形式でクリップボードにコピーしました。",
     "description": "ヘッダーなしコピー成功時のメッセージ"
   },
-  "successSheetNameCopy": {
-    "message": "シート名付きでクリップボードにコピーしました。",
-    "description": "シート名付きコピー成功時のメッセージ"
+  "successNoSheetNameCopy": {
+    "message": "シート名なし形式でクリップボードにコピーしました。",
+    "description": "シート名なしコピー成功時のメッセージ"
   },
   "sheetNameNotFound": {
     "message": "シート名を取得できませんでした",

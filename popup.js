@@ -2,12 +2,33 @@
 let originalClipboardText = '';
 let currentSheetName = '';
 
+// ローカルストレージのキー
+const STORAGE_KEY_NO_HEADER = 'alwaysNoHeader';
+const STORAGE_KEY_NO_SHEET_NAME = 'alwaysNoSheetName';
+
 // i18nテキストを適用する関数
 function applyI18n() {
   document.getElementById('description').textContent = chrome.i18n.getMessage('popupDescription');
   document.getElementById('loading').textContent = chrome.i18n.getMessage('loading');
   document.getElementById('copyNoHeaderBtn').textContent = chrome.i18n.getMessage('copyNoHeaderButton');
-  document.getElementById('includeSheetNameLabel').textContent = chrome.i18n.getMessage('includeSheetName');
+  document.getElementById('copyNoSheetNameBtn').textContent = chrome.i18n.getMessage('copyNoSheetNameButton');
+  document.getElementById('alwaysNoHeaderLabel').textContent = chrome.i18n.getMessage('alwaysNoHeader');
+  document.getElementById('alwaysNoSheetNameLabel').textContent = chrome.i18n.getMessage('alwaysNoSheetName');
+}
+
+// 設定を読み込む
+async function loadSettings() {
+  const result = await chrome.storage.local.get([STORAGE_KEY_NO_HEADER, STORAGE_KEY_NO_SHEET_NAME]);
+  document.getElementById('alwaysNoHeader').checked = result[STORAGE_KEY_NO_HEADER] || false;
+  document.getElementById('alwaysNoSheetName').checked = result[STORAGE_KEY_NO_SHEET_NAME] || false;
+}
+
+// 設定を保存する
+async function saveSettings() {
+  await chrome.storage.local.set({
+    [STORAGE_KEY_NO_HEADER]: document.getElementById('alwaysNoHeader').checked,
+    [STORAGE_KEY_NO_SHEET_NAME]: document.getElementById('alwaysNoSheetName').checked
+  });
 }
 
 // ポップアップが開かれた瞬間に自動実行
@@ -15,15 +36,31 @@ document.addEventListener('DOMContentLoaded', async () => {
   // i18nテキストを適用
   applyI18n();
 
+  // 設定を読み込む
+  await loadSettings();
+
   await performConversion();
 
   // ヘッダーなしコピーボタンのイベントリスナーを設定
   document.getElementById('copyNoHeaderBtn').addEventListener('click', async () => {
-    await copyWithoutHeader();
+    await copyWithOptions(false, !document.getElementById('alwaysNoSheetName').checked);
   });
 
-  // シート名チェックボックスの変更時に再変換
-  document.getElementById('includeSheetName').addEventListener('change', async () => {
+  // シート名なしコピーボタンのイベントリスナーを設定
+  document.getElementById('copyNoSheetNameBtn').addEventListener('click', async () => {
+    await copyWithOptions(!document.getElementById('alwaysNoHeader').checked, false);
+  });
+
+  // チェックボックス変更時の処理
+  document.getElementById('alwaysNoHeader').addEventListener('change', async () => {
+    await saveSettings();
+    if (originalClipboardText) {
+      await updateMarkdownOutput();
+    }
+  });
+
+  document.getElementById('alwaysNoSheetName').addEventListener('change', async () => {
+    await saveSettings();
     if (originalClipboardText) {
       await updateMarkdownOutput();
     }
@@ -34,12 +71,13 @@ async function performConversion() {
   const statusEl = document.getElementById('status');
   const previewEl = document.getElementById('preview');
   const loadingEl = document.getElementById('loading');
-  const copySectionEl = document.getElementById('copySection');
-  const sheetNameOptionEl = document.getElementById('sheetNameOption');
+  const buttonRowEl = document.getElementById('buttonRow');
+  const optionSectionEl = document.getElementById('optionSection');
 
   try {
     // ローディング表示
     loadingEl.style.display = 'block';
+    statusEl.style.display = 'none';
 
     // シート名を取得
     const sheetNameResponse = await chrome.runtime.sendMessage({ action: 'getSheetName' });
@@ -67,9 +105,13 @@ async function performConversion() {
     // 元のテキストを保存
     originalClipboardText = clipboardText;
 
-    // タブ区切りデータをMarkdownテーブルに変換（デフォルトはシート名なし）
-    const includeSheetName = document.getElementById('includeSheetName').checked;
-    const markdown = convertToMarkdown(clipboardText, includeSheetName ? currentSheetName : null);
+    // チェックボックスの状態に基づいて変換
+    const includeHeader = !document.getElementById('alwaysNoHeader').checked;
+    const includeSheetName = !document.getElementById('alwaysNoSheetName').checked && currentSheetName;
+
+    const markdown = includeHeader
+      ? convertToMarkdown(clipboardText, includeSheetName ? currentSheetName : null)
+      : convertToMarkdownNoHeader(clipboardText, includeSheetName ? currentSheetName : null);
 
     if (!markdown) {
       throw new Error(chrome.i18n.getMessage('errorNoTable'));
@@ -81,26 +123,26 @@ async function performConversion() {
     // ローディング非表示
     loadingEl.style.display = 'none';
 
-    // シート名オプションを表示（シート名が取得できた場合のみ）
-    if (currentSheetName) {
-      sheetNameOptionEl.style.display = 'flex';
-    }
+    // 成功メッセージを表示
+    statusEl.textContent = chrome.i18n.getMessage('successConverted');
+    statusEl.className = 'status success';
+    statusEl.style.display = 'block';
 
     // プレビューを表示
     previewEl.textContent = markdown;
     previewEl.style.display = 'block';
 
-    // 成功メッセージを表示
-    statusEl.textContent = chrome.i18n.getMessage('successConverted');
-    statusEl.className = 'status success';
+    // ボタン行を表示
+    buttonRowEl.style.display = 'flex';
 
-    // ヘッダーなしコピーセクションを表示
-    copySectionEl.style.display = 'block';
+    // オプションセクションを表示
+    optionSectionEl.style.display = 'block';
 
   } catch (error) {
     loadingEl.style.display = 'none';
     statusEl.textContent = chrome.i18n.getMessage('errorPrefix') + error.message;
     statusEl.className = 'status error';
+    statusEl.style.display = 'block';
   }
 }
 
@@ -110,8 +152,12 @@ async function updateMarkdownOutput() {
   const previewEl = document.getElementById('preview');
 
   try {
-    const includeSheetName = document.getElementById('includeSheetName').checked;
-    const markdown = convertToMarkdown(originalClipboardText, includeSheetName ? currentSheetName : null);
+    const includeHeader = !document.getElementById('alwaysNoHeader').checked;
+    const includeSheetName = !document.getElementById('alwaysNoSheetName').checked && currentSheetName;
+
+    const markdown = includeHeader
+      ? convertToMarkdown(originalClipboardText, includeSheetName ? currentSheetName : null)
+      : convertToMarkdownNoHeader(originalClipboardText, includeSheetName ? currentSheetName : null);
 
     if (!markdown) {
       throw new Error(chrome.i18n.getMessage('errorNoTable'));
@@ -125,6 +171,48 @@ async function updateMarkdownOutput() {
 
     // 成功メッセージを表示
     statusEl.textContent = chrome.i18n.getMessage('successConverted');
+    statusEl.className = 'status success';
+
+  } catch (error) {
+    statusEl.textContent = chrome.i18n.getMessage('errorPrefix') + error.message;
+    statusEl.className = 'status error';
+  }
+}
+
+// オプション付きでコピー
+async function copyWithOptions(includeHeader, includeSheetName) {
+  const statusEl = document.getElementById('status');
+  const previewEl = document.getElementById('preview');
+
+  try {
+    if (!originalClipboardText) {
+      throw new Error(chrome.i18n.getMessage('errorNoOriginalData'));
+    }
+
+    const sheetName = includeSheetName && currentSheetName ? currentSheetName : null;
+
+    const markdown = includeHeader
+      ? convertToMarkdown(originalClipboardText, sheetName)
+      : convertToMarkdownNoHeader(originalClipboardText, sheetName);
+
+    if (!markdown) {
+      throw new Error(chrome.i18n.getMessage('errorNoTable'));
+    }
+
+    // クリップボードにコピー
+    await navigator.clipboard.writeText(markdown);
+
+    // プレビューを更新
+    previewEl.textContent = markdown;
+
+    // 成功メッセージを表示
+    if (!includeHeader) {
+      statusEl.textContent = chrome.i18n.getMessage('successNoHeaderCopy');
+    } else if (!includeSheetName) {
+      statusEl.textContent = chrome.i18n.getMessage('successNoSheetNameCopy');
+    } else {
+      statusEl.textContent = chrome.i18n.getMessage('successConverted');
+    }
     statusEl.className = 'status success';
 
   } catch (error) {
@@ -346,36 +434,3 @@ function convertToMarkdownNoHeader(text, sheetName = null) {
 
   return markdownLines.join('\n');
 }
-
-async function copyWithoutHeader() {
-  const statusEl = document.getElementById('status');
-  const previewEl = document.getElementById('preview');
-
-  try {
-    if (!originalClipboardText) {
-      throw new Error(chrome.i18n.getMessage('errorNoOriginalData'));
-    }
-
-    // ヘッダーなし形式に変換（シート名なし）
-    const markdownNoHeader = convertToMarkdownNoHeader(originalClipboardText, null);
-
-    if (!markdownNoHeader) {
-      throw new Error(chrome.i18n.getMessage('errorNoTable'));
-    }
-
-    // クリップボードにコピー
-    await navigator.clipboard.writeText(markdownNoHeader);
-
-    // プレビューを更新
-    previewEl.textContent = markdownNoHeader;
-
-    // 成功メッセージを表示
-    statusEl.textContent = chrome.i18n.getMessage('successNoHeaderCopy');
-    statusEl.className = 'status success';
-
-  } catch (error) {
-    statusEl.textContent = chrome.i18n.getMessage('errorPrefix') + error.message;
-    statusEl.className = 'status error';
-  }
-}
-

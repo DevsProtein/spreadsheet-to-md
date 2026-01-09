@@ -19,9 +19,17 @@
     "message": "Copy without Header",
     "description": "Button text for copying without header"
   },
-  "copyWithSheetNameButton": {
-    "message": "Copy with Sheet Name",
-    "description": "Button text for copying with sheet name"
+  "copyNoSheetNameButton": {
+    "message": "Copy without Sheet Name",
+    "description": "Button text for copying without sheet name"
+  },
+  "alwaysNoHeader": {
+    "message": "Always exclude header",
+    "description": "Label for always exclude header checkbox"
+  },
+  "alwaysNoSheetName": {
+    "message": "Always exclude sheet name",
+    "description": "Label for always exclude sheet name checkbox"
   },
   "errorCopyFailed": {
     "message": "Failed to copy selection",
@@ -51,9 +59,9 @@
     "message": "Copied to clipboard without header row.",
     "description": "Success message for no-header copy"
   },
-  "successSheetNameCopy": {
-    "message": "Copied to clipboard with sheet name.",
-    "description": "Success message for sheet name copy"
+  "successNoSheetNameCopy": {
+    "message": "Copied to clipboard without sheet name.",
+    "description": "Success message for no-sheet-name copy"
   },
   "sheetNameNotFound": {
     "message": "Could not get sheet name",
