@@ -351,7 +351,7 @@ function convertToMarkdown(text, sheetName = null) {
 
   // シート名を追加（オプション）
   if (sheetName) {
-    markdownLines.push(`### ${sheetName}`);
+    markdownLines.push(sheetName);
     markdownLines.push('');
   }
 
@@ -420,7 +420,7 @@ function convertToMarkdownNoHeader(text, sheetName = null) {
 
   // シート名を追加（オプション）
   if (sheetName) {
-    markdownLines.push(`### ${sheetName}`);
+    markdownLines.push(sheetName);
     markdownLines.push('');
   }
 

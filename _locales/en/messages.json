@@ -44,7 +44,7 @@
     "description": "Error message when no table data is found"
   },
   "successConverted": {
-    "message": "Converted to Markdown table! Copied to clipboard.",
+    "message": "Converted! Copied to clipboard",
     "description": "Success message after conversion"
   },
   "errorPrefix": {
@@ -56,11 +56,11 @@
     "description": "Error message when original data is missing"
   },
   "successNoHeaderCopy": {
-    "message": "Copied to clipboard without header row.",
+    "message": "Copied without header",
     "description": "Success message for no-header copy"
   },
   "successNoSheetNameCopy": {
-    "message": "Copied to clipboard without sheet name.",
+    "message": "Copied without sheet name",
     "description": "Success message for no-sheet-name copy"
   },
   "sheetNameNotFound": {

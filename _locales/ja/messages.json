@@ -44,7 +44,7 @@
     "description": "テーブルデータが見つからない時のエラーメッセージ"
   },
   "successConverted": {
-    "message": "Markdownテーブルに変換完了！クリップボードにコピーしました。",
+    "message": "変換完了！クリップボードにコピーしました",
     "description": "変換成功時のメッセージ"
   },
   "errorPrefix": {
@@ -56,11 +56,11 @@
     "description": "元のデータがない時のエラーメッセージ"
   },
   "successNoHeaderCopy": {
-    "message": "ヘッダーなし形式でクリップボードにコピーしました。",
+    "message": "ヘッダーなしでコピーしました",
     "description": "ヘッダーなしコピー成功時のメッセージ"
   },
   "successNoSheetNameCopy": {
-    "message": "シート名なし形式でクリップボードにコピーしました。",
+    "message": "シート名なしでコピーしました",
     "description": "シート名なしコピー成功時のメッセージ"
   },
   "sheetNameNotFound": {
