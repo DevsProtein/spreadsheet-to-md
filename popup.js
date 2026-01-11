@@ -12,6 +12,7 @@ function applyI18n() {
   document.getElementById('loading').textContent = chrome.i18n.getMessage('loading');
   document.getElementById('copyNoHeaderBtn').textContent = chrome.i18n.getMessage('copyNoHeaderButton');
   document.getElementById('copyNoSheetNameBtn').textContent = chrome.i18n.getMessage('copyNoSheetNameButton');
+  document.getElementById('optionsLegend').textContent = chrome.i18n.getMessage('optionsLabel');
   document.getElementById('alwaysNoHeaderLabel').textContent = chrome.i18n.getMessage('alwaysNoHeader');
   document.getElementById('alwaysNoSheetNameLabel').textContent = chrome.i18n.getMessage('alwaysNoSheetName');
 }

@@ -23,12 +23,16 @@
     "message": "シート名無しでコピー",
     "description": "シート名なしコピーボタンのテキスト"
   },
+  "optionsLabel": {
+    "message": "Options",
+    "description": "オプションセクションのラベル"
+  },
   "alwaysNoHeader": {
-    "message": "ヘッダーを常に含めない",
+    "message": "Always exclude header",
     "description": "ヘッダーを常に含めないチェックボックスのラベル"
   },
   "alwaysNoSheetName": {
-    "message": "シート名を常に含めない",
+    "message": "Always exclude sheet name",
     "description": "シート名を常に含めないチェックボックスのラベル"
   },
   "errorCopyFailed": {

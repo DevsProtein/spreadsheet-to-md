@@ -23,6 +23,10 @@
     "message": "Copy without Sheet Name",
     "description": "Button text for copying without sheet name"
   },
+  "optionsLabel": {
+    "message": "Options",
+    "description": "Options section label"
+  },
   "alwaysNoHeader": {
     "message": "Always exclude header",
     "description": "Label for always exclude header checkbox"
