@@ -100,7 +100,7 @@ Install from Chrome Web Store: [Link coming soon]
 
 This extension does not collect any user data. All processing is done locally within your browser.
 
-Details: [Privacy Policy](PRIVACY_POLICY_EN.md)
+Details: [Privacy Policy](PRIVACY_POLICY.md)
 
 ---
 
