@@ -141,8 +141,8 @@ async function performConversion() {
 
   } catch (error) {
     loadingEl.style.display = 'none';
-    statusEl.textContent = chrome.i18n.getMessage('errorPrefix') + error.message;
-    statusEl.className = 'status error';
+    statusEl.textContent = chrome.i18n.getMessage('usageInstructions');
+    statusEl.className = 'status info';
     statusEl.style.display = 'block';
   }
 }

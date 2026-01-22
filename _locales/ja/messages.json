@@ -1,6 +1,6 @@
 {
   "extName": {
-    "message": "Spreadsheet to Markdown",
+    "message": "Spreadsheet to Markdown (Open Source)",
     "description": "拡張機能の名前"
   },
   "extDescription": {
@@ -70,5 +70,9 @@
   "sheetNameNotFound": {
     "message": "シート名を取得できませんでした",
     "description": "シート名が取得できない時のエラーメッセージ"
+  },
+  "usageInstructions": {
+    "message": "【使い方】スプレッドシート（Google Sheets / Excel Online）でセルを選択してから、この拡張機能のアイコンをクリックしてください。",
+    "description": "使い方の説明"
   }
 }

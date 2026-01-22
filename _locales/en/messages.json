@@ -1,6 +1,6 @@
 {
   "extName": {
-    "message": "Spreadsheet to Markdown",
+    "message": "Spreadsheet to Markdown (Open Source)",
     "description": "Extension name"
   },
   "extDescription": {
@@ -70,5 +70,9 @@
   "sheetNameNotFound": {
     "message": "Could not get sheet name",
     "description": "Error message when sheet name cannot be retrieved"
+  },
+  "usageInstructions": {
+    "message": "[How to use] Select cells in your spreadsheet (Google Sheets / Excel Online), then click this extension icon.",
+    "description": "Usage instructions"
   }
 }
