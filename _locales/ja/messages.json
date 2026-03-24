@@ -11,6 +11,10 @@
     "message": "スプレッドシートで選択中のセルを自動的にMarkdown形式に変換します。",
     "description": "ポップアップの説明文"
   },
+  "popupDescriptionBold": {
+    "message": "選択中のセル",
+    "description": "ポップアップの説明文のボールド部分"
+  },
   "loading": {
     "message": "変換中",
     "description": "変換中のローディングテキスト"
@@ -48,7 +52,7 @@
     "description": "テーブルデータが見つからない時のエラーメッセージ"
   },
   "successConverted": {
-    "message": "変換完了！クリップボードにコピーしました",
+    "message": "変換完了！選択範囲をクリップボードにコピーしました",
     "description": "変換成功時のメッセージ"
   },
   "errorPrefix": {

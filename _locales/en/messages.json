@@ -11,6 +11,10 @@
     "message": "Automatically converts selected cells in your spreadsheet to Markdown format.",
     "description": "Popup description text"
   },
+  "popupDescriptionBold": {
+    "message": "selected cells",
+    "description": "Bold part of popup description"
+  },
   "loading": {
     "message": "Converting",
     "description": "Loading text during conversion"
@@ -48,7 +52,7 @@
     "description": "Error message when no table data is found"
   },
   "successConverted": {
-    "message": "Converted! Copied to clipboard",
+    "message": "Converted! Selection copied to clipboard",
     "description": "Success message after conversion"
   },
   "errorPrefix": {

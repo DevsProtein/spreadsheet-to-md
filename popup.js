@@ -8,7 +8,19 @@ const STORAGE_KEY_NO_SHEET_NAME = 'alwaysNoSheetName';
 
 // i18nテキストを適用する関数
 function applyI18n() {
-  document.getElementById('description').textContent = chrome.i18n.getMessage('popupDescription');
+  const descEl = document.getElementById('description');
+  const fullText = chrome.i18n.getMessage('popupDescription');
+  const boldText = chrome.i18n.getMessage('popupDescriptionBold');
+  const boldIndex = fullText.indexOf(boldText);
+  if (boldIndex !== -1) {
+    descEl.textContent = fullText.substring(0, boldIndex);
+    const bold = document.createElement('b');
+    bold.textContent = boldText;
+    descEl.appendChild(bold);
+    descEl.appendChild(document.createTextNode(fullText.substring(boldIndex + boldText.length)));
+  } else {
+    descEl.textContent = fullText;
+  }
   document.getElementById('loading').textContent = chrome.i18n.getMessage('loading');
   document.getElementById('copyNoHeaderBtn').textContent = chrome.i18n.getMessage('copyNoHeaderButton');
   document.getElementById('copyNoSheetNameBtn').textContent = chrome.i18n.getMessage('copyNoSheetNameButton');
